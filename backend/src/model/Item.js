@@ -21,6 +21,10 @@ const itemSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true
+  },
+  daily: {
+    type: Number,
+    required: true
   }
 })
 

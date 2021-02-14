@@ -11,7 +11,7 @@ const fetchItems = async () => {
 }
 
 function Items() {
-  const { status, data } = useQuery('items', fetchItems);
+  const items = useQuery('items', fetchItems);
 
   return (
     <div>
@@ -23,10 +23,10 @@ function Items() {
           <p>Expected Daily Saving</p>
         </header>
         {
-          status === 'success' ?
-            data.map((item) => {
+          items.status === 'success' ?
+            items.data.map((item) => {
             return (
-            <div key={item.item_id}>
+            <div key={item._id}>
               <Item data={item} />
             </div>
             )

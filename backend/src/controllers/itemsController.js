@@ -7,19 +7,17 @@ const router = express.Router();
 const priceCalculator = (price, startDate, endDate) => {
   let start = timeUnit.milliseconds.toDays(Date.parse(startDate));
   let end = timeUnit.milliseconds.toDays(Date.parse(endDate));
-
   let timeDiff = Math.floor(end - start);
 
-  return price / timeDiff;
+  return Math.ceil(price / timeDiff);
 }
 
 router.get('/', async (req, res) => {
   try {
     Item.find({}, (err, items) => {
-      items.forEach(item => {
-        item.daily = priceCalculator(item.price, item.saving_date_start, item.saving_date_end);
-      })
       
+      if (err) return res.status(400).send(err);
+
       res.status(200).json(items)
     })
   } catch (error) {
@@ -30,12 +28,14 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+  const dailySaving = priceCalculator(req.body.price, req.body.start, req.body.end);
   const item = new Item({
     name: req.body.name,
     price: req.body.price,
     savingDateStart: req.body.start,
     savingDateEnd: req.body.end,
-    imageUrl: req.body.image
+    imageUrl: req.body.image,
+    daily: dailySaving
   });
 
   try {
